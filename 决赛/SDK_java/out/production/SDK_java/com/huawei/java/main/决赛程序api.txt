@@ -1,0 +1,5 @@
+boolean streamJudge(int j, int t, int demand)  //用于判断当前需求为demand的流是否能够在t时刻卸载到边缘节点j上
+
+void edgeNodeUpdate(int j, int t, int demand)  //当需求为demand的流在t时刻卸载到边缘节点j上后,更新流的状态
+
+int bigMaxT()  //找到大流需求最高的时刻
