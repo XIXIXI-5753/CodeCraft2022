@@ -78,7 +78,6 @@ public class Main {
 			}
 		}
 
-
 		//初始化时间列表
 		T = 1;
 		String timeString = demand.get(1).get(0);
@@ -115,20 +114,14 @@ public class Main {
 		}
 
 
-		//	System.out.println(edgeNodeSet[0].bandwidthAvalible[0]);
-
 		streamMax = 0;
 
 		ArrayList<Integer> edgelist4 = sortEdge2(edgeNodeSet);
 
 
 		ArrayList<Integer> edgelist5 = sortEdge4(edgeNodeSet);   //带宽乘以度由大到小排序
-/*		for(int j : edgelist5){
-			System.out.println(edgeNodeSet[j].bandwidth + ":" + edgeNodeSet[j].avalibleClient.size());
-		}*/
-		//	int edgeBan = edgelist5.get(edgelist5.size() - 1);
-		//	edgelist5.remove(Integer.valueOf(edgeBan));
-		//	edgelist4.remove(Integer.valueOf(edgeBan));
+
+
 		for(int i = 0; i < clientNodeSize; i++){    //初始化用户节点数组
 			int[] clientdemand = new int[T];
 
@@ -190,142 +183,11 @@ public class Main {
 
 
 
-
-/*
-		for(int j : edgelist3){
-			System.out.println(edgeNodeSet[j].avalibleClient.size()+","+edgeNodeSet[j].bandwidth);
-		}
-*/
-
-
-
-
-
-
-
-
-/*
-
-		int t = 0;
-		while(t<T){
-
-			//int t = maxArray(demandT);  //找到了最大时刻
-			//if(t == -1) break;
-			//现在需要找到最大时刻的最大流
-			while(true) {
-				int temp = 0;
-				int clientInd = -1;
-				int streamInd = -1;
-				for (int i = 0; i < clientNodeSize; i++) {   //找到最大时刻的最大流
-					for (int k = 0; k < clientSet[i].demandStream[t].size(); k++) {
-						if (clientSet[i].demandStream[t].get(k).destination != -1) continue;
-						//System.out.println("ss");
-						if (clientSet[i].demandStream[t].get(k).demand > temp) {
-							temp = clientSet[i].demandStream[t].get(k).demand;
-							clientInd = i;
-							streamInd = k;
-						}
-					}
-				}
-				if(clientInd == -1) break;
-
-				//现在需要找到可以满足该最大流最佳边缘节点
-				int j = 0;
-				for(j = 0; j < clientSet[clientInd].avalibleEdgeNode.size(); j++){
-					int edgeInd = clientSet[clientInd].avalibleEdgeNode.get(j);
-					if( edgeNodeSet[edgeInd].bandwidthAvalible[t] >= temp) break;
-				}
-				int edgeInd = clientSet[clientInd].avalibleEdgeNode.get(j);   //满足的索引
-				demandT[t] -= temp;
-				demandDyn[clientInd][t] -= temp;
-				clientSet[clientInd].demandStream[t].get(streamInd).destination = j;  //这里的j表示为第j个可用的边缘节点,而不是总体的第j个边缘节点
-				edgeNodeSet[edgeInd].bandwidthAvalible[t] -= temp;
-				//现在相当于找到了要分配的边缘节点,以及最应该分配的时刻
-			}
-			//if(temp <= base_cost) break;
-			t++;
-		}
-*/
-
-
-
-/*     //找到最大的流,分可以分配的节点
-		int count = 0;
-		while(true){
-			int t = maxT(); //找到当前需求最大的时刻
-			System.out.println(streamT[t].get(0).demand);
-			//找到满足当前最大流的最好边缘节点
-			int j1;
-			int j = 0;
-			int edgeInd = 0;
-			for(j1 = 0; j1 < edgelist3.size() ;j1++){
-				j = edgelist3.get(j1);
-				if(edgeNodeSet[j].avalibleClient.contains(streamT[t].get(0).source) && edgeNodeSet[j].bandwidthAvalible[t]>=streamT[t].get(0).demand && edgeNodeSet[j].max5.size() < T/20)
-					break;
-			}
-			if(j1 == edgelist3.size()) break;
-			count ++;
-			//对找到的边缘节点在该时刻进行分配
-			int streamInd = 0;
-			while(true) {
-				if(streamInd >= streamT[t].size() || edgeNodeSet[j].bandwidthAvalible[t] == 0) break;
-				if(edgeNodeSet[j].bandwidthAvalible[t] >= streamT[t].get(0).demand && edgeNodeSet[j].avalibleClient.contains(streamT[t].get(streamInd).source)) {
-					streamT[t].get(streamInd).destination = j;
-					demandT[t] -= streamT[t].get(streamInd).demand;
-					demandDyn[streamT[t].get(streamInd).source][t] -= streamT[t].get(streamInd).demand;
-					edgeNodeSet[j].bandwidthAvalible[t] -= streamT[t].get(streamInd).demand;
-					streamT[t].remove(streamInd);
-					continue;
-				}else{
-					streamInd++;
-					continue;
-				}
-			}
-			edgeNodeSet[j].max5.add(t);
-
-
-			//找到剩下的max5时刻
-			int[] demandEdge = new int[T];
-			for(int t1 = 0; t1 < T; t1++) {
-				if(t1 == t) continue;
-				for (int i = 0; i < edgeNodeSet[j].avalibleClient.size(); i++) {
-					demandEdge[t1] += demandDyn[edgeNodeSet[j].avalibleClient.get(i)][t1];
-				}
-			}
-			int[] max5ThisEdge = sortList(demandEdge);
-			for(int k = 0; k < max5ThisEdge.length; k++){
-				int tInd = max5ThisEdge[k];
-				int l = 0;
-
-
-
-				while(true) {
-					if(l >= streamT[tInd].size() || edgeNodeSet[j].bandwidthAvalible[tInd] == 0) break;
-					if(edgeNodeSet[j].bandwidthAvalible[tInd] >= streamT[tInd].get(0).demand && edgeNodeSet[j].avalibleClient.contains(streamT[tInd].get(l).source)) {
-						streamT[tInd].get(l).destination = j;
-						demandT[tInd] -= streamT[tInd].get(l).demand;
-						demandDyn[streamT[tInd].get(l).source][tInd] -= streamT[tInd].get(l).demand;
-						edgeNodeSet[j].bandwidthAvalible[tInd] -= streamT[tInd].get(l).demand;
-						streamT[tInd].remove(l);
-						continue;
-					}else{
-						l++;
-						continue;
-					}
-				}
-				edgeNodeSet[j].max5.add(tInd);
-			}
-		}
-
-		*/
-		int edgeEnd = 1;
+		int edgeEnd = 1;  //定义超级节点的数量
 		ArrayList<Integer> edgeSuper = new ArrayList<Integer>();
 		for(int j = edgelist3.size() -  edgeEnd; j < edgelist3.size(); j++){   //初始化超级节点
 			edgeSuper.add(edgelist3.get(j));
 		}
-
-
-		//int[] xxx = sortList2(edgelist3.get(0));
 
 
 
@@ -336,29 +198,8 @@ public class Main {
 
 
 
-/*			if(j1 < edgelist3.size()/1.5) {
-                for (int t1 = 0; t1 < T; t1++) {
-                    for (int i : edgeNodeSet[j].avalibleClient) {
-                        demandEdge[t1] += demandDynBase[i][t1];//存的是该时刻边缘节点可以接入的需求
-                    }
-                }
-            }else{
-                for (int t1 = 0; t1 < T; t1++) {
-                    for (int i = 0; i < edgeNodeSet[j].avalibleClient.size(); i++) {
-                        demandEdge[t1] += demandDyn[edgeNodeSet[j].avalibleClient.get(i)][t1];//存的是该时刻边缘节点可以接入的需求
-                    }
-                }
-            }
-            int[] max5ThisEdge = sortList(demandEdge); //找到该节点接入的最大五个时刻*/
-
-
-
 			int[] max5ThisEdge = sortList2(j, j1, edgelist3.size()); //找到该节点接入的最大五个时刻
-/*			if(j1 == 0){
-				for(int t : max5ThisEdge){
-					System.out.println(t);
-				}
-			}*/
+
 
 			for(int t : max5ThisEdge){
 				int streamInd = 0;
@@ -384,7 +225,7 @@ public class Main {
 			}
 		}
 
-		for(int j : edgeSuper){
+		for(int j : edgeSuper){    //超级节点的Top5时刻选择当前总需求最高的时刻
 			for(int x = 0; x < T/20; x++){
 				int t = maxL(demandT);
 				int streamInd = 0;
@@ -426,9 +267,6 @@ public class Main {
 
 
 
-
-
-		//int count = 0;
 		streamAll = new ArrayList<Stream>();
 		for(int t = 0; t < T; t++){
 			streamAll.addAll(streamT[t]);
@@ -587,13 +425,6 @@ public class Main {
 		output();
 		long endTime = System.currentTimeMillis();
 		System.out.println(endTime - startTime);
-/*        int sum = 0;
-        for(int t = 0; t < T; t++){
-            System.out.println(t + ":" + demandT[t]);
-            sum += demandT[t];
-        }
-        System.out.println(sum);*/
-
 	}
 
 
@@ -679,7 +510,7 @@ public class Main {
 		return result;
 	}
 
-	public static int[] sortList2(int j, int j1, int j2){   //取的逻辑 可以优先取去掉小流的最大时刻,当此时发现比较小时,再选取不去掉小流的
+	public static int[] sortList2(int j, int j1, int j2){   //取的逻辑 可以优先取去掉小流的最大时刻,当此时发现去掉后结果比较小时,再选取不去掉小流的
 		int[] result = new int[T/20];
 		int[] demandEdgeBase = new int[T];
 
@@ -975,80 +806,6 @@ public class Main {
 }
 
 
-class ClientNode{
-	public String name;          //节点名字
-	public int[] demand;         //节点带宽需求,按时间排列
-	public ArrayList<Integer> avalibleEdgeNode; //该可用边缘节点
-	public ArrayList<Integer> avalibleEdgeNode2; //该可用边缘节点
-	public ArrayList<Stream>[] demandStream; //每个时刻需要的流的带宽需求
-	public ClientNode(String name, int[] demand, ArrayList<Integer> avalibleEdgeNode){
-		this.name = name;
-		this.demand = demand;
-		this.avalibleEdgeNode = avalibleEdgeNode;
-	}
 
-	public ClientNode(String name, ArrayList<Integer> avalibleEdgeNode){
-		this.name = name;
-		this.avalibleEdgeNode = avalibleEdgeNode;
-	}
-}
 
-class EdgeNode implements Comparable<EdgeNode>{
-	public String name; //边缘节点名字
-	public int bandwidth; //边缘节点带宽
-	public int bandwidthAvalible[];
-	public ArrayList<Integer> avalibleClient;
-	public ArrayList<Integer> max5 = new ArrayList<Integer>();
-	public int price95 = 0;
-	public double price = 0;
-	//public int difference = 0;
-	public EdgeNode(String name, int bandwidth, ArrayList<Integer> avalibleClient){
-		this.name = name;
-		this.bandwidth = bandwidth;
-		this.avalibleClient = avalibleClient;
-	}
-	public EdgeNode(String name, int bandwidth){
-		this.name = name;
-		this.bandwidth = bandwidth;
-	}
 
-	@Override
-	public int compareTo(EdgeNode o) {   //目前最好效果是先按带宽从大到小,再按度从小到大
-		if(this.bandwidth < o.bandwidth) return 1;
-		else if(this.bandwidth > o.bandwidth) return -1;
-		else {
-			return Integer.compare(this.avalibleClient.size(), o.avalibleClient.size());
-		}
-
-	}
-}
-
-class Stream implements Comparable<Stream>{
-	public String name;
-	public int demand;
-	public int source;
-	public int destination = -1;
-	public int time;
-	public int avalibleEdgeSize;
-	public Stream(String name, int demand, int source, int time, int avalibleEdgeSize){
-		this.name = name;
-		this.demand = demand;
-		this.source = source;
-		this.time = time;
-		this.avalibleEdgeSize = avalibleEdgeSize;
-	}
-
-	@Override
-	public int compareTo(Stream o) {
-
-/*		if(this.demand < o.demand){   //先带宽从大到小,再度从小到大
-			return 1;
-		}else if(this.demand > o.demand){
-			return -1;
-		}else{
-			return Integer.compare(this.avalibleEdgeSize, o.avalibleEdgeSize);
-		}*/
-
-		return Integer.compare(o.demand /o.avalibleEdgeSize, this.demand/this.avalibleEdgeSize);
-	}
-}
